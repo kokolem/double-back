@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>EarthKAM Extractor</title>
+    <script>
+
+        function extract() {
+            const request = new XMLHttpRequest();
+            request.open("GET", `https://cors-anywhere.herokuapp.com/${document.getElementById("url").value}`, true);
+            request.onload = () => {
+
+                document.getElementById("earthkamHtml").innerHTML = request.responseText;
+                let xpath;
+
+                try {
+                    xpath = "//td[text()='Location']/../td[2]";
+                    const location = document.evaluate(xpath, document.getElementById("earthkamHtml"), null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                    document.getElementById("location").innerText = `Location: ${location.textContent}`;
+                } catch (e) {
+                    document.getElementById("location").innerText = "Location: not found";
+                }
+
+                try {
+                    xpath = "//td[text()='Center']/../td[2]";
+                    const coords = document.evaluate(xpath, document.getElementById("earthkamHtml"), null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                    document.getElementById("coords").innerText = `Coordinates: ${coords.textContent}`;
+                } catch (e) {
+                    document.getElementById("coords").innerText = "Coordinates: not found";
+                }
+
+                try {
+                    xpath = "//a[text()='725x482']";
+                    const smallImg = document.evaluate(xpath, document.getElementById("earthkamHtml"), null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                    document.getElementById("752x482").innerHTML = `Image 725x482: <br> <img src='http://images.earthkam.org/main.php${smallImg.search}' alt='size: 725x482'/>`;
+                } catch (e) {
+                    document.getElementById("752x482").innerHTML = "Image 725x482: not found";
+                }
+
+                try {
+                    xpath = "//a[text()='4312x2868']";
+                    const bigImg = document.evaluate(xpath, document.getElementById("earthkamHtml"), null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                    document.getElementById("4312x2868").innerHTML = `Image 4312x2868: <br> <img src='http://images.earthkam.org/main.php${bigImg.search}' alt='size: 4312x2868'/>`;
+                } catch (e) {
+                    document.getElementById("4312x2868").innerHTML = "Image 4312x2868: not found";
+                }
+
+            };
+            request.send();
+        }
+
+        window.onload = () => {
+            document.getElementById("form").addEventListener("submit", extract, false);
+        };
+
+    </script>
+</head>
+
+<body>
+
+<form id="form" onsubmit="return false">
+    <label for="url">Image details on EarthKAM:</label>
+    <input type="text" id="url" value="http://images.earthkam.org/main.php?g2_itemId=745156" style="width: 350px">
+    <input type="submit" value="Extract!">
+</form>
+
+<hr>
+
+Extracted details:
+<ul>
+    <li id="location">Location:</li>
+    <li id="coords">Coordinates:</li>
+    <li id="752x482">Image 725x482:</li>
+    <li id="4312x2868">Image 4312x2868:</li>
+</ul>
+
+<div id="earthkamHtml" hidden></div>
+
+</body>
+</html>
