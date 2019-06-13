@@ -1,0 +1,36 @@
+<h1>Přidání bodů podle infokaret</h1>
+
+<hr>
+
+<form id="infocardDirectoryUrlForm" onsubmit="return false">
+<label for="indocardDirectoryURL">URL adresáře infokaret:</label>
+<input type="text" id="infocardDirectoryURL" value="http://www.zsbila.cz/gallery/EarthKam/Infokarty/index.html" style="width: 350px"/>
+<input type="submit" value="Začít"/>
+</form>
+
+<hr>
+
+<div id="infocardDetails">
+  
+<img id="infocard" />
+  
+<form id="ImageDetailsUrlForm" onsubmit="return false">
+<label for="url">Image details on EarthKAM:</label>
+<input type="text" id="url" value="http://images.earthkam.org/main.php?g2_itemId=745156" style="width: 350px">
+<input type="submit" value="Extract!">
+</form>
+
+<hr>
+
+Extracted details:
+<ul>
+    <li id="location">Location:</li>
+    <li id="coords">Coordinates:</li>
+    <li id="752x482">Image 725x482:</li>
+    <li id="4312x2868">Image 4312x2868:</li>
+</ul>
+</div>
+
+<button id="next">Další</button>
+
+<div id="earthkamHtml" hidden></div>
