@@ -1,36 +1,140 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Přidání bodů podle infokaret</title>
+    <style>
+        .step2 {
+            display: none;
+        }
+
+        input[type=text], input[type=url] {
+            width: 450px;
+        }
+
+        body {
+            text-align: center;
+        }
+    </style>
+    <script>
+        let step = 1;
+        let baseUrl;
+
+        window.onload = () => {
+            document.getElementById("cardDirUrlForm").addEventListener("submit", loadInfocardDir, false);
+            document.getElementById("imageDataForm").addEventListener("submit", saveAndContinue, false);
+            document.getElementById("imageUrlForm").addEventListener("submit", extract, false);
+        };
+
+        function saveAndContinue() {
+            document.getElementById("infocard").src = `${baseUrl + step++}.png`;
+
+            const fieldsToWipe = ["imgUrl", "name", "location", "coords", "imgSmall", "imgBig"];
+            fieldsToWipe.forEach(toWipe => {
+                document.getElementById(toWipe).value = "";
+            })
+        }
+
+        function loadInfocardDir() {
+            document.getElementsByClassName("step1")[0].style.display = "none";
+            document.getElementsByClassName("step2")[0].style.display = "block";
+
+            let dirUrl = document.getElementById("cardDirUrl").value;
+            baseUrl = `${dirUrl.substring(0, dirUrl.length - 10)}slides/`;
+            saveAndContinue();
+        }
+
+        function extract() {
+            const request = new XMLHttpRequest();
+            request.open("GET", `https://cors-anywhere.herokuapp.com/${document.getElementById("imgUrl").value}`, true);
+            request.onload = () => {
+
+                document.getElementById("earthkam").innerHTML = request.responseText;
+                let xpath;
+
+                try {
+                    xpath = "//td[text()='Location']/../td[2]";
+                    const location = document.evaluate(xpath, document.getElementById("earthkam"), null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                    document.getElementById("location").value = location.textContent;
+                } catch (e) {
+                    alert("Lokaci se nepodařilo načíst.")
+                }
+
+                try {
+                    xpath = "//td[text()='Center']/../td[2]";
+                    const coords = document.evaluate(xpath, document.getElementById("earthkam"), null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                    document.getElementById("coords").value = coords.textContent;
+                } catch (e) {
+                    alert("Souřadnice se nepodařilo načíst.")
+                }
+
+                try {
+                    xpath = "//a[text()='725x482']";
+                    const smallImg = document.evaluate(xpath, document.getElementById("earthkam"), null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                    document.getElementById("imgSmall").value = `http://images.earthkam.org/main.php${smallImg.search}`;
+                } catch (e) {
+                    alert("Obrázek ve velikosti 752x482 se nepodařilo načíst.")
+                }
+
+                try {
+                    xpath = "//a[text()='4312x2868']";
+                    const bigImg = document.evaluate(xpath, document.getElementById("earthkam"), null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                    document.getElementById("imgBig").value = `http://images.earthkam.org/main.php${bigImg.search}`;
+                } catch (e) {
+                    alert("Obrázek ve velikosti 4312x2868 se nepodařilo načíst.")
+                }
+
+            };
+            request.send();
+        }
+    </script>
+</head>
+<body>
+
 <h1>Přidání bodů podle infokaret</h1>
 
-<hr>
-
-<form id="infocardDirectoryUrlForm" onsubmit="return false">
-<label for="indocardDirectoryURL">URL adresáře infokaret:</label>
-<input type="text" id="infocardDirectoryURL" value="http://www.zsbila.cz/gallery/EarthKam/Infokarty/index.html" style="width: 350px"/>
-<input type="submit" value="Začít"/>
-</form>
-
-<hr>
-
-<div id="infocardDetails">
-  
-<img id="infocard" />
-  
-<form id="ImageDetailsUrlForm" onsubmit="return false">
-<label for="url">Image details on EarthKAM:</label>
-<input type="text" id="url" value="http://images.earthkam.org/main.php?g2_itemId=745156" style="width: 350px">
-<input type="submit" value="Extract!">
-</form>
-
-<hr>
-
-Extracted details:
-<ul>
-    <li id="location">Location:</li>
-    <li id="coords">Coordinates:</li>
-    <li id="752x482">Image 725x482:</li>
-    <li id="4312x2868">Image 4312x2868:</li>
-</ul>
+<div class="step1">
+    <form onsubmit="return false" id="cardDirUrlForm">
+        <label for="cardDirUrl">URL adresáře s infokartami:</label>
+        <input type="url" id="cardDirUrl" value="http://www.zsbila.cz/gallery/EarthKam/Infokarty/index.html"/>
+        <input type="submit" value="Načíst infokarty">
+    </form>
 </div>
 
-<button id="next">Další</button>
+<div class="step2">
+    <img src="" id="infocard" alt="infokarta"/>
+    <br><br>
+    <form onsubmit="return false" id="imageUrlForm">
+        <label for="imgUrl">URL informací o obrázku na EarthKAM:</label>
+        <input type="url" id="imgUrl" placeholder="URL končící ?g2_itemId=číslo"/>
+        <input type="submit" value="Nahrát data z EarthKAM">
+    </form>
 
-<div id="earthkamHtml" hidden></div>
+    <br>
+    <hr>
+    <br>
+
+    <form onsubmit="return false" id="imageDataForm">
+        <label for="name">Název místa:</label><input type="text" id="name"
+                                                     placeholder="opište z infokarty (nesmí být stejné jako popis)"/>
+        <br>
+        <label for="location">Popis:</label><input type="text" id="location"
+                                                   placeholder="opište z infokarty (nesmí být stejné jako název) nebo nahrajte z EarthKAM"/>
+        <br>
+        <label for="coords">Souřadnice:</label><input type="text" id="coords"
+                                                      placeholder="opište z infokarty nebo nahrajte z EarthKAM"/>
+        <br>
+        <label for="imgSmall">URL obrázku 725x482:</label><input type="url" id="imgSmall"
+                                                                 placeholder="zadejte ručně nebo nahrajte z EarthKAM"/>
+        <br>
+        <label for="imgBig">URL obrázku 4312x2868:</label><input type="url" id="imgBig"
+                                                                 placeholder="zadejte ručně nebo nahrajte z EarthKAM"/>
+        <br><br>
+        <input type="submit" value="Uložit a pokračovat"/>
+    </form>
+</div>
+
+<div id="earthkam" hidden></div>
+
+</body>
+</html>
