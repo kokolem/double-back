@@ -37,20 +37,20 @@
 
                 const formFields=[["name","name"],["location","description"], ["imgSmall","image"], ["imgSmall", "image"], ["imgBig", "fullImage"]]
                 formFields.forEach(field => {
-                    params += `${field[1]}=${document.getElementById(field[0]).value};`
+                    params += `${field[1]}=${encodeURI(document.getElementById(field[0]).value)}&`
                 })
 
                 let long = parseFloat(document.getElementById("coords").value.slice(0,5));
                 if (document.getElementById("coords").value[7]=="S") {
                     long = long * -1
                 }
-                params += `long=${long};`
+                params += `long=${long}&`
 
                 let lat = parseFloat(document.getElementById("coords").value.slice(10, 15));
                 if (document.getElementById("coords").value.slice(-1)=="W") {
                     lat = lat * -1
                 }
-                params += `lat=${lat};`
+                params += `lat=${lat}`
                 console.log(params)
 
                 // request.send(params);
