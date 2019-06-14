@@ -47,7 +47,7 @@
                 params += `long=${long};`
 
                 let lat = parseFloat(document.getElementById("coords").value.slice(10, 15));
-                if (document.getElementById("coords").slice(-1)=="W") {
+                if (document.getElementById("coords").value.slice(-1)=="W") {
                     lat = lat * -1
                 }
                 params += `lat=${lat};`
