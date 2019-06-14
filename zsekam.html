@@ -33,6 +33,7 @@
             else {
                 const request = new XMLHttpRequest();
                 request.open("POST", "/marker/new/edit", true);
+                request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
                 let params = "";
 
                 const formFields=[["name","name"],["location","description"], ["imgSmall","image"], ["imgSmall", "image"], ["imgBig", "fullImage"]]
