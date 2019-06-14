@@ -116,19 +116,24 @@
 
     <form onsubmit="return false" id="imageDataForm">
         <label for="name">Název místa:</label><input type="text" id="name"
-                                                     placeholder="opište z infokarty (nesmí být stejné jako popis)"/>
+                                                     placeholder="opište z infokarty (nesmí být stejné jako popis)"
+                                                     required/>
         <br>
         <label for="location">Popis:</label><input type="text" id="location"
-                                                   placeholder="opište z infokarty (nesmí být stejné jako název) nebo nahrajte z EarthKAM"/>
+                                                   placeholder="opište z infokarty (nesmí být stejné jako název) nebo nahrajte z EarthKAM"
+                                                   required/>
         <br>
         <label for="coords">Souřadnice:</label><input type="text" id="coords"
-                                                      placeholder="opište z infokarty nebo nahrajte z EarthKAM"/>
+                                                      placeholder="opište z infokarty nebo nahrajte z EarthKAM"
+                                                      required/>
         <br>
         <label for="imgSmall">URL obrázku 725x482:</label><input type="url" id="imgSmall"
-                                                                 placeholder="zadejte ručně nebo nahrajte z EarthKAM"/>
+                                                                 placeholder="zadejte ručně nebo nahrajte z EarthKAM"
+                                                                 required/>
         <br>
         <label for="imgBig">URL obrázku 4312x2868:</label><input type="url" id="imgBig"
-                                                                 placeholder="zadejte ručně nebo nahrajte z EarthKAM"/>
+                                                                 placeholder="zadejte ručně nebo nahrajte z EarthKAM"
+                                                                 required/>
         <br><br>
         <input type="submit" value="Uložit a pokračovat"/>
     </form>
