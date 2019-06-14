@@ -27,6 +27,15 @@
         };
 
         function saveAndContinue() {
+            const request = new XMLHttpRequest();
+            request.open("POST", "/marker/new/edit", true);
+            let params = "";
+            
+            const formFields=[["name","name"],["location","description"], ["imgSmall","image"], ["imgSmall", "image"], ["imgBig", "fullImage"]]
+            formFields.forEach(field => {
+                params += `${field[1]}=${document.getElementById(field[0])}`
+            })
+            
             document.getElementById("infocard").src = `${baseUrl + step++}.png`;
 
             const fieldsToWipe = ["imgUrl", "name", "location", "coords", "imgSmall", "imgBig"];
