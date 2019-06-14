@@ -53,9 +53,10 @@
                 params += `lat=${lat}`
                 console.log(params)
 
-                // request.send(params);
+                request.send(params);
                 request.onload = () => {
-                    alert("Uloženo.")  
+                    console.log(request.responseText);
+                    alert("Uloženo.");
 
                     document.getElementById("infocard").src = `${baseUrl + step++}.png`;
                     const fieldsToWipe = ["imgUrl", "name", "location", "coords", "imgSmall", "imgBig"];
