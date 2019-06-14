@@ -33,15 +33,18 @@
             
             const formFields=[["name","name"],["location","description"], ["imgSmall","image"], ["imgSmall", "image"], ["imgBig", "fullImage"]]
             formFields.forEach(field => {
-                params += `${field[1]}=${document.getElementById(field[0])}`
+                params += `${field[1]}=${document.getElementById(field[0])};`
             })
-            
-            document.getElementById("infocard").src = `${baseUrl + step++}.png`;
-
-            const fieldsToWipe = ["imgUrl", "name", "location", "coords", "imgSmall", "imgBig"];
-            fieldsToWipe.forEach(toWipe => {
-                document.getElementById(toWipe).value = "";
-            })
+            request.send(params);
+            request.onload = () => {
+                alert("Uloženo.")  
+                
+                document.getElementById("infocard").src = `${baseUrl + step++}.png`;
+                const fieldsToWipe = ["imgUrl", "name", "location", "coords", "imgSmall", "imgBig"];
+                fieldsToWipe.forEach(toWipe => {
+                    document.getElementById(toWipe).value = "";
+                })
+            }
         }
 
         function loadInfocardDir() {
