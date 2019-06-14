@@ -27,37 +27,42 @@
         };
 
         function saveAndContinue() {
-            const request = new XMLHttpRequest();
-            request.open("POST", "/marker/new/edit", true);
-            let params = "";
-            
-            const formFields=[["name","name"],["location","description"], ["imgSmall","image"], ["imgSmall", "image"], ["imgBig", "fullImage"]]
-            formFields.forEach(field => {
-                params += `${field[1]}=${document.getElementById(field[0])};`
-            })
-            
-            let long = parseInt(document.getElementById("coords").value.slice(0,4), 10);
-            if (document.getElementById("coords").value[7]=="S") {
-                long = long * -1
-            }
-            params += `long=${long};`
-            
-            let lat = parseInt(document.getElementById("coords").value.slice(10, 14), 10);
-            if (document.getElementById("coords").value[-1]=="W") {
-                lat = lat * -1
-            }
-            params += `lat=${lat};`
-            console.log(params)
-            
-            // request.send(params);
-            request.onload = () => {
-                alert("Uloženo.")  
-                
+            if (step == 0) {
                 document.getElementById("infocard").src = `${baseUrl + step++}.png`;
-                const fieldsToWipe = ["imgUrl", "name", "location", "coords", "imgSmall", "imgBig"];
-                fieldsToWipe.forEach(toWipe => {
-                    document.getElementById(toWipe).value = "";
+            }
+            else {
+                const request = new XMLHttpRequest();
+                request.open("POST", "/marker/new/edit", true);
+                let params = "";
+
+                const formFields=[["name","name"],["location","description"], ["imgSmall","image"], ["imgSmall", "image"], ["imgBig", "fullImage"]]
+                formFields.forEach(field => {
+                    params += `${field[1]}=${document.getElementById(field[0])};`
                 })
+
+                let long = parseInt(document.getElementById("coords").value.slice(0,4), 10);
+                if (document.getElementById("coords").value[7]=="S") {
+                    long = long * -1
+                }
+                params += `long=${long};`
+
+                let lat = parseInt(document.getElementById("coords").value.slice(10, 14), 10);
+                if (document.getElementById("coords").value[-1]=="W") {
+                    lat = lat * -1
+                }
+                params += `lat=${lat};`
+                console.log(params)
+
+                // request.send(params);
+                request.onload = () => {
+                    alert("Uloženo.")  
+
+                    document.getElementById("infocard").src = `${baseUrl + step++}.png`;
+                    const fieldsToWipe = ["imgUrl", "name", "location", "coords", "imgSmall", "imgBig"];
+                    fieldsToWipe.forEach(toWipe => {
+                        document.getElementById(toWipe).value = "";
+                    })
+                }
             }
         }
 
