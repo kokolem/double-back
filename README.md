@@ -14,6 +14,6 @@
 
 ## Pages
 - index.html – about me and useful links
-- double-back.html – if I can't use JavaScript to redirect my users back, I tell the to go here
+- double-back.html – if I can't use JavaScript to redirect my users back, I tell them to go here
 - earthkam-extractor.html – tool to extract image information from EarthKAM
 - streaming.html – list of websites with movies, serials, etc.
