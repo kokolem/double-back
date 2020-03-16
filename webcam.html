@@ -19,7 +19,7 @@
             let camHeight = stream.getVideoTracks()[0].getSettings().height;
             camWidth = screen.width < camWidth ? screen.width : camWidth;
             camHeight = screen.height < camHeight ? screen.height : camHeight;
-            instructions.innerHTML = `<a onclick="window.open('/webcam2.html','Webkamera','width=${camWidth},height=${camHeight}')">Klikněte sem.</a>`;
+            instructions.innerHTML = `<a onclick="window.open('/webcam2.html','Webkamera','width=${camWidth},height=${camHeight}')" href="#">Klikněte sem.</a>`;
         })
         .catch(e => instructions.innerText = "Došlo k chybě.");
 
