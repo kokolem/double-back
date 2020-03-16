@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Webkamera</title>
+</head>
+<body style="margin: 0">
+<div style="text-align: center;">
+    <video autoplay id="video-player" style="display: none; height: 100vh"></video>
+</div>
+
+<div id="allow-camera" style="text-align: center; padding-top: 50vh">
+    <h2>Povolte této stránce přístup k Vaší webkameře.</h2>
+</div>
+
+<script>
+    const videoPlayer = document.getElementById("video-player");
+    const allowCamera = document.getElementById("allow-camera");
+
+    navigator.mediaDevices.getUserMedia({video: true})
+        .then(stream => {
+            allowCamera.style.display = "none";
+            videoPlayer.style.display = "inline";
+            videoPlayer.srcObject = stream
+        })
+</script>
+</body>
+</html>
