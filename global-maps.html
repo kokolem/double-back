@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Rozdělení podle měsíců</title>
+    <style>
+        :root {
+            --img-width-years: 7.8vw;
+            --img-width-months: 180px
+        }
+    </style>
+</head>
+<body>
+<h1>Rozdělení podle měsíců</h1>
+<form onsubmit="return handleForm()">
+    <label>
+        Zadejte adresu datasetu:
+        <input type="url" id="dataset-url">
+    </label>
+    <br>
+    V řádcích budou obrázky ve stejném:
+    <label>
+        <input type="radio" name="table-type" value="months" checked>
+        měsíci
+    </label>
+    <label>
+        <input type="radio" name="table-type" value="years">
+        roce
+    </label>
+    <br>
+    <input type="submit" value="Rozdělit">
+</form>
+<div id="table"></div>
+<script>
+    function render_imgs_by_months(imgs, date_start, date_end) {
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        const months_czech = ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"]
+
+        const start_month = date_start.substring(0, date_start.length - 5)
+        const end_month = date_end.substring(0, date_end.length - 5)
+
+        const start_year = parseInt(date_start.substring(date_start.length - 4, date_start.length))
+        const end_year = parseInt(date_end.substring(date_end.length - 4, date_end.length))
+
+        const table = document.getElementById("table");
+
+        for (let i = 0; i < months.indexOf(start_month); i++) {
+            imgs.unshift("")
+        }
+        const remaining_last = 11 - months.indexOf(end_month)
+        for (let i = 0; i < remaining_last; i++) {
+            imgs.push("")
+        }
+
+        let table_html = "<table style=\"width:100%\">" +
+            "<tr><th></th>"
+
+        for (let i = start_year; i <= end_year; i++) {
+            table_html += `<th>${i}</th>`
+        }
+        table_html += "</tr>"
+
+        for (let i = 0; i < 12; i++) {
+            table_html += "<tr>"
+            table_html += `<th>${months_czech[i]}</th>`
+            table_html += "</th>"
+            const imgs_this_month = imgs.filter((value, index) => index % 12 === 0)
+            for (img of imgs_this_month) {
+                if (img === '/img/globalmaps/no_data_available.png' || img === "") {
+                    table_html += '<td></td>'
+                } else {
+                    table_html += `<td><img src=${img} style="width: var(--img-width-months)"/></td>`
+                }
+            }
+            imgs.shift()
+        }
+
+        table.innerHTML = table_html
+    }
+
+
+    function render_imgs_by_years(imgs, date_start, date_end) {
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+        const start_month = date_start.substring(0, date_start.length - 5)
+        const end_month = date_end.substring(0, date_end.length - 5)
+
+        const start_year = parseInt(date_start.substring(date_start.length - 4, date_start.length))
+
+        const table = document.getElementById("table");
+        let table_html = "<table style=\"width:100%\">" +
+            "<tr>" +
+            "<th></th>" +
+            "<th>Leden</th>" +
+            "<th>Únor</th>" +
+            "<th>Březen</th>" +
+            "<th>Duben</th>" +
+            "<th>Květen</th>" +
+            "<th>Červen</th>" +
+            "<th>Červenec</th>" +
+            "<th>Srpen</th>" +
+            "<th>Září</th>" +
+            "<th>Říjen</th>" +
+            "<th>Listopad</th>" +
+            "<th>Prosinec</th>" +
+            "</tr>"
+        table_html += "<tr>" +
+            `<th>${start_year}</th>`
+
+        for (let i = 0; i < months.indexOf(start_month); i++) {
+            table_html += "<td></td>"
+        }
+
+        const first_year_imgs = imgs.slice(0, 12 - months.indexOf(start_month))
+        for (img of first_year_imgs) {
+            if (img === '/img/globalmaps/no_data_available.png') {
+                table_html += '<td></td>'
+            } else {
+                table_html += `<td><img src=${img} style="width: var(--img-width-years)"/></td>`
+            }
+        }
+
+        table_html += "</tr>"
+
+        if (imgs.length <= 12) {
+            table.innerHTML = table_html
+            return;
+        }
+
+        const whole_year_imgs = imgs.slice(12 - months.indexOf(start_month), imgs.length - months.indexOf(end_month) - 1)
+        const imgs_in_years = []
+        while (whole_year_imgs.length > 0) {
+            imgs_in_years.push(whole_year_imgs.splice(0, 12))
+        }
+
+        let num_imgs_in_years = 0
+        for (let i = 0; i < imgs_in_years.length; i++) {
+            table_html += "<tr>" +
+                `<th>${start_year + i + 1}</th>`
+            for (const img of imgs_in_years[i]) {
+                num_imgs_in_years += 1
+                if (img === '/img/globalmaps/no_data_available.png') {
+                    table_html += '<td></td>'
+                } else {
+                    table_html += `<td><img src=${img} style="width: var(--img-width-years)"/></td>`
+                }
+            }
+            table_html += "</tr>"
+        }
+
+        if (imgs.slice(12 - months.indexOf(start_month), imgs.length).length % 12 === 0) {
+            table.innerHTML = table_html
+            return;
+        }
+
+        const num_rendered_years = first_year_imgs.length + num_imgs_in_years
+        const last_year_imgs = imgs.slice(num_rendered_years, imgs.length)
+
+        table_html += "<tr>" +
+            `<th>${start_year + imgs_in_years.length + 1}</th>`
+        for (img of last_year_imgs) {
+            if (img === '/img/globalmaps/no_data_available.png') {
+                table_html += '<td></td>'
+            } else {
+                table_html += `<td><img src=${img} style="width: var(--img-width-years)"/></td>`
+            }
+        }
+
+        const last_empty = 12 - last_year_imgs.length
+        for (let i = 0; i < last_empty; i++) {
+            table_html += "<td></td>"
+        }
+
+        table_html += "</tr></table>"
+
+        table.innerHTML = table_html
+    }
+
+    function handleForm() {
+        const dataset_url = document.getElementById("dataset-url").value
+        const table_type = document.querySelector('input[name="table-type"]:checked').value
+
+        if (dataset_url === '') {
+            alert("Zadejte prosím adresu")
+            return false;
+        }
+
+        fetch(`http://kybersquat.cz:56176/${dataset_url}`).then(r => r.text()
+            .then(dataset_html => {
+                const imgs_regex = /<img.*class = "panel-slideshow-image[^"]*".*src = "([^"]+).*data-value="([^"]+).*>/g
+                const imgs_match = dataset_html.matchAll(imgs_regex)
+                const imgs = []
+                for (const img of imgs_match) {
+                    imgs.push(img[1])
+                }
+
+                const date_start_regex = /<span.*class = "range-label-middle[^"]*".*>(.*)<\/span>/
+                const date_start_match = dataset_html.match(date_start_regex)
+                const date_start = date_start_match[1]
+
+                const date_end_regex = new RegExp(`<span.*class = \"range-label-middle[^\"]*\".*data-value=\"${imgs.length}\".*>(.*)<\\/span>`)
+                const date_end_match = dataset_html.match(date_end_regex)
+                const date_end = date_end_match[1]
+
+                if (table_type === 'years') {
+                    render_imgs_by_years(imgs, date_start, date_end)
+                } else {
+                    render_imgs_by_months(imgs, date_start, date_end)
+                }
+
+            }))
+
+        return false;
+    }
+</script>
+</body>
+</html>
