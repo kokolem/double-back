@@ -185,7 +185,7 @@
             return false;
         }
 
-        fetch(`http://kybersquat.cz:56176/${dataset_url}`).then(r => r.text()
+        fetch(`https://kybersquat.cz/cors/${dataset_url}`).then(r => r.text()
             .then(dataset_html => {
                 const imgs_regex = /<img.*class = "panel-slideshow-image[^"]*".*src = "([^"]+).*data-value="([^"]+).*>/g
                 const imgs_match = dataset_html.matchAll(imgs_regex)
