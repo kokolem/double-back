@@ -18,3 +18,4 @@
 - earthkam-extractor.html – tool to extract image information from EarthKAM
 - streaming.html – list of websites with movies, serials, etc.
 - webcam.html – mirror through webcam
+- global-maps.html – tool to display images from NASA Global Maps in matrix by months and years
